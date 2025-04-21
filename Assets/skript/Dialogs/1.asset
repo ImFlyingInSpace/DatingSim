@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
+  m_Name: 1
+  m_EditorClassIdentifier: 
+  character: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  lines:
+  - You dream in colors not meant for mortal minds.
+  - I tasted them.
+  - Why do you resist?
+  - Submit, and I will crown you with power beyond waking comprehension.
+  position: 2
+  additionalCharacterLeft: {fileID: 0}
+  additionalCharacterRight: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  additionalCharacterMiddle: {fileID: 0}
+  nextDialog: {fileID: 11400000, guid: f38d6ed0aec830a4192200804d26b4a7, type: 2}
+  requirePlayerDecision: 1
+  option1Text: submit
+  option2Text: rebel
+  option1NextDialog: {fileID: 11400000, guid: f38d6ed0aec830a4192200804d26b4a7, type: 2}
+  option2NextDialog: {fileID: 11400000, guid: b81431883cd6dd742bdf0a4b59fea31b, type: 2}

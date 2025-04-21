@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
+  m_Name: 0
+  m_EditorClassIdentifier: 
+  character: {fileID: 11400000, guid: cb0d88e4a81f15f458c42fd1e4c0411d, type: 2}
+  lines:
+  - A swirling black void hums behind the massive stained-glass window.
+  - The air pulses with psychic static.
+  - "You stand alone\u2014until the Eye descends, trailing shadowy tendrils, its
+    crimson iris locking onto yours."
+  position: 2
+  additionalCharacterLeft: {fileID: 11400000, guid: 6b4823fbbbed13b488245406a91a0631, type: 2}
+  additionalCharacterRight: {fileID: 0}
+  additionalCharacterMiddle: {fileID: 0}
+  nextDialog: {fileID: 11400000, guid: f39d7b859469a71499f8475c607a0902, type: 2}
+  requirePlayerDecision: 0
+  option1Text: 
+  option2Text: 
+  option1NextDialog: {fileID: 0}
+  option2NextDialog: {fileID: 0}

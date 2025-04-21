@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
+  m_Name: 1a
+  m_EditorClassIdentifier: 
+  character: {fileID: 11400000, guid: 08730c2fed8045749801052d1ee9bcab, type: 2}
+  lines:
+  - Oh my lord.
+  - My sweet fallen angel.
+  - I see your beauty and i kneel before you.
+  - Im yours to take and enjoy as you please.
+  position: 1
+  additionalCharacterLeft: {fileID: 0}
+  additionalCharacterRight: {fileID: 0}
+  additionalCharacterMiddle: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  nextDialog: {fileID: 0}
+  requirePlayerDecision: 0
+  option1Text: 
+  option2Text: 
+  option1NextDialog: {fileID: 0}
+  option2NextDialog: {fileID: 0}
