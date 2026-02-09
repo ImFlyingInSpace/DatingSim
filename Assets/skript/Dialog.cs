@@ -5,7 +5,9 @@ using UnityEngine.UIElements;
 [CreateAssetMenu(fileName = "Dialog", menuName = "Scriptable Objects/Dialog")]
 public class Dialog : ScriptableObject
 {
+    public Sprite backgroundSprite;
     public Character character;
+    public string expression = "default";
     public string[] lines;
     public Position position;
 
@@ -22,4 +24,5 @@ public class Dialog : ScriptableObject
     public string option2Text;
     public Dialog option1NextDialog;
     public Dialog option2NextDialog;
+    public bool triggerSceneTransition;
 }

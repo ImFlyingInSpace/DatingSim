@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f5944a08c062b704b8359ad62d0c2e22
+guid: 477c8d0ccf9c7ee47ab39225e50954b2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3499606393642247999
-    second: NightmareKing1_0
+      213: -4510506197841190661
+    second: roomForDesert_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: NightmareKing1_0
+      name: roomForDesert_0
       rect:
         serializedVersion: 2
-        x: 293
-        y: 339
-        width: 1541
-        height: 1449
+        x: 0
+        y: 0
+        width: 2048
+        height: 2048
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1c89445d686ee6fc0800000000000000
-      internalID: -3499606393642247999
+      spriteID: bf06a70c2867761c0800000000000000
+      internalID: -4510506197841190661
       vertices: []
       indices: 
       edges: []

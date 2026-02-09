@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 477c06edda5a06d46829db7ce1b4f3f9, type: 3}
-  m_Name: NightmareKing
+  m_Name: Lucy
   m_EditorClassIdentifier: 
-  characterName: Nightmare King
+  characterName: Lucy
   sprite: {fileID: 0}
   expressions:
-  - expressionName: 
-    expressionSprite: {fileID: 0}
-  - expressionName: 
-    expressionSprite: {fileID: 0}
+  - expressionName: default
+    expressionSprite: {fileID: -5508584112869647287, guid: 8c21f47c18317ce46a8719b4315d8e3e, type: 3}
+  - expressionName: happy
+    expressionSprite: {fileID: -8470455561190075304, guid: 92cf1f4f961836945aacd045c7eeb42d, type: 3}

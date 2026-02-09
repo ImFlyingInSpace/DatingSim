@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
   m_Name: 1
   m_EditorClassIdentifier: 
+  backgroundSprite: {fileID: -3499606393642247999, guid: f5944a08c062b704b8359ad62d0c2e22, type: 3}
   character: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  expression: default
   lines:
   - You dream in colors not meant for mortal minds.
   - I tasted them.
@@ -28,3 +30,4 @@ MonoBehaviour:
   option2Text: rebel
   option1NextDialog: {fileID: 11400000, guid: f38d6ed0aec830a4192200804d26b4a7, type: 2}
   option2NextDialog: {fileID: 11400000, guid: b81431883cd6dd742bdf0a4b59fea31b, type: 2}
+  triggerSceneTransition: 0

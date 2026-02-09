@@ -12,14 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
   m_Name: 0
   m_EditorClassIdentifier: 
-  character: {fileID: 11400000, guid: cb0d88e4a81f15f458c42fd1e4c0411d, type: 2}
+  backgroundSprite: {fileID: -9065010994557800392, guid: a00a357ef1c7f43428ed32eb840afcb7, type: 3}
+  character: {fileID: 11400000, guid: 8f1477fce16bc8d4c9d6ba7d21b38889, type: 2}
+  expression: happyLucy
   lines:
   - A swirling black void hums behind the massive stained-glass window.
   - The air pulses with psychic static.
   - "You stand alone\u2014until the Eye descends, trailing shadowy tendrils, its
     crimson iris locking onto yours."
   position: 2
-  additionalCharacterLeft: {fileID: 11400000, guid: 6b4823fbbbed13b488245406a91a0631, type: 2}
+  additionalCharacterLeft: {fileID: 0}
   additionalCharacterRight: {fileID: 0}
   additionalCharacterMiddle: {fileID: 0}
   nextDialog: {fileID: 11400000, guid: f39d7b859469a71499f8475c607a0902, type: 2}
@@ -28,3 +30,4 @@ MonoBehaviour:
   option2Text: 
   option1NextDialog: {fileID: 0}
   option2NextDialog: {fileID: 0}
+  triggerSceneTransition: 1

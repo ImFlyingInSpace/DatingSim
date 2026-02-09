@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 65089001c38201c4ebdf38fa648abfb3
+guid: 901d496978b7daa44bf2f171c57740ff
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -794485344402476606
-    second: ND1_0
+      213: 5412361721866007150
+    second: worriedJulius_0
   - first:
-      213: -4588417163635843413
-    second: ND1_1
+      213: 6716168238123638260
+    second: worriedJulius_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -99,30 +99,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ND1_0
+      name: worriedJulius_0
       rect:
         serializedVersion: 2
-        x: 170
-        y: 810
-        width: 172
-        height: 52
+        x: 944
+        y: 1730
+        width: 132
+        height: 33
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +118,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2c1f2a3e9cb69f4f0800000000000000
-      internalID: -794485344402476606
+      spriteID: e62beb36f429c1b40800000000000000
+      internalID: 5412361721866007150
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ND1_1
+      name: worriedJulius_1
       rect:
         serializedVersion: 2
-        x: 11
-        y: 15
-        width: 473
-        height: 784
+        x: 702
+        y: 48
+        width: 701
+        height: 1670
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bae1e2076eaa250c0800000000000000
-      internalID: -4588417163635843413
+      spriteID: 4fdde15cd6f943d50800000000000000
+      internalID: 6716168238123638260
       vertices: []
       indices: 
       edges: []
@@ -163,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -172,9 +159,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      ND1_0: -794485344402476606
-      ND1_1: -4588417163635843413
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

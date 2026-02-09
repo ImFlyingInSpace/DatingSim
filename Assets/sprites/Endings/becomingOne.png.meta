@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 610525f74f87dc44ab43158e34b4c2e8
+guid: 9f32492c91d2ed24f87d003d12ad6f3a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2376592609489477160
-    second: bckgrnd1_0
+      213: 2648124529370469737
+    second: becomingOne_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,24 +96,11 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bckgrnd1_0
+      name: becomingOne_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8d1af870d95a40fd0800000000000000
-      internalID: -2376592609489477160
+      spriteID: 9651026aa3700c420800000000000000
+      internalID: 2648124529370469737
       vertices: []
       indices: 
       edges: []

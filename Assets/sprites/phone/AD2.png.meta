@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 8f5c1a8d1a04d4e4bb53c950856feaa3
+guid: 1eb1fa5416eb541499ebb308f147adfa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7743696195534454980
-    second: prechod_0
+      213: 7100659068832965809
+    second: AD2_0
+  - first:
+      213: -2678071514575267296
+    second: AD2_1
+  - first:
+      213: 3267169033493381356
+    second: AD2_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +102,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: prechod_0
+      name: AD2_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 480
-        height: 478
+        x: 595
+        y: 568
+        width: 832
+        height: 1399
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +121,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c0006779a2277b60800000000000000
-      internalID: 7743696195534454980
+      spriteID: 1b4e1fc5dcb9a8260800000000000000
+      internalID: 7100659068832965809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AD2_1
+      rect:
+        serializedVersion: 2
+        x: 1481
+        y: 550
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02a16a2852495dad0800000000000000
+      internalID: -2678071514575267296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AD2_2
+      rect:
+        serializedVersion: 2
+        x: 1481
+        y: 538
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce0878efce0575d20800000000000000
+      internalID: 3267169033493381356
       vertices: []
       indices: 
       edges: []
@@ -147,8 +184,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      prechod_0: 7743696195534454980
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

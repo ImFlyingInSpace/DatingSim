@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 26a44b91d763edc439afe916c159c021
+guid: 43b62c5ccc837e340a43ae174e22c950
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5496513886337487731
-    second: bckgrnd2_0
+      213: 1727536420469101612
+    second: manic3Julius_0
+  - first:
+      213: 1828334468808891891
+    second: manic3Julius_1
+  - first:
+      213: 2560495428260935782
+    second: manic3Julius_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +102,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bckgrnd2_0
+      name: manic3Julius_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2048
-        height: 2048
+        x: 750
+        y: 511
+        width: 626
+        height: 1354
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +121,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d8c2addfdb578b3b0800000000000000
-      internalID: -5496513886337487731
+      spriteID: c245c96b83179f710800000000000000
+      internalID: 1727536420469101612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: manic3Julius_1
+      rect:
+        serializedVersion: 2
+        x: 1376
+        y: 1023
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fdd4ff238c8f5910800000000000000
+      internalID: 1828334468808891891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: manic3Julius_2
+      rect:
+        serializedVersion: 2
+        x: 625
+        y: 2
+        width: 784
+        height: 383
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6683182a605b88320800000000000000
+      internalID: 2560495428260935782
       vertices: []
       indices: 
       edges: []
