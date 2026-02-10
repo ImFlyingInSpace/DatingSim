@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Lucy
   m_EditorClassIdentifier: 
   characterName: Lucy
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 8c21f47c18317ce46a8719b4315d8e3e, type: 3}
   expressions:
   - expressionName: default
-    expressionSprite: {fileID: -5508584112869647287, guid: 8c21f47c18317ce46a8719b4315d8e3e, type: 3}
+    expressionSprite: {fileID: 21300000, guid: 8c21f47c18317ce46a8719b4315d8e3e, type: 3}
   - expressionName: happy
-    expressionSprite: {fileID: -8470455561190075304, guid: 92cf1f4f961836945aacd045c7eeb42d, type: 3}
+    expressionSprite: {fileID: 21300000, guid: 92cf1f4f961836945aacd045c7eeb42d, type: 3}

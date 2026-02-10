@@ -12,22 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
   m_Name: 0
   m_EditorClassIdentifier: 
-  backgroundSprite: {fileID: -9065010994557800392, guid: a00a357ef1c7f43428ed32eb840afcb7, type: 3}
-  character: {fileID: 11400000, guid: 8f1477fce16bc8d4c9d6ba7d21b38889, type: 2}
-  expression: happyLucy
+  backgroundSprite: {fileID: 7533330668999806004, guid: 9c279ef2e5e6088408de49c0ba0938d1, type: 3}
+  character: {fileID: 11400000, guid: 3c5a3259ecfbf8748bad02f71f54396d, type: 2}
+  expression: happy
+  position: 0
   lines:
   - A swirling black void hums behind the massive stained-glass window.
   - The air pulses with psychic static.
   - "You stand alone\u2014until the Eye descends, trailing shadowy tendrils, its
     crimson iris locking onto yours."
-  position: 2
   additionalCharacterLeft: {fileID: 0}
-  additionalCharacterRight: {fileID: 0}
   additionalCharacterMiddle: {fileID: 0}
+  additionalCharacterRight: {fileID: 0}
   nextDialog: {fileID: 11400000, guid: f39d7b859469a71499f8475c607a0902, type: 2}
-  requirePlayerDecision: 0
-  option1Text: 
-  option2Text: 
-  option1NextDialog: {fileID: 0}
-  option2NextDialog: {fileID: 0}
   triggerSceneTransition: 1
+  requirePlayerDecision: 0
+  option1Text: bdf
+  option1NextDialog: {fileID: 11400000, guid: f39d7b859469a71499f8475c607a0902, type: 2}
+  option1AddsLove: 0
+  option1LoveAmount: 1
+  option2Text: fb
+  option2NextDialog: {fileID: 11400000, guid: f39d7b859469a71499f8475c607a0902, type: 2}
+  option2AddsLove: 0
+  option2LoveAmount: 1
+  useLoveThreshold: 0
+  loveThreshold: 0
+  option3Text: 
+  option3NextDialog: {fileID: 0}
+  option3AddsLove: 0
+  option3LoveAmount: 1
+  option4Text: 
+  option4NextDialog: {fileID: 0}
+  option4AddsLove: 0
+  option4LoveAmount: 1
+  backgroundOnly: 0

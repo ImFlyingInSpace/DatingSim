@@ -12,22 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
   m_Name: 1
   m_EditorClassIdentifier: 
-  backgroundSprite: {fileID: -3499606393642247999, guid: f5944a08c062b704b8359ad62d0c2e22, type: 3}
-  character: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  backgroundSprite: {fileID: 7635013726552783190, guid: 6f64962d5ac2e1c49b457fbf8c5f5ca0, type: 3}
+  character: {fileID: 11400000, guid: 8f1477fce16bc8d4c9d6ba7d21b38889, type: 2}
   expression: default
-  lines:
-  - You dream in colors not meant for mortal minds.
-  - I tasted them.
-  - Why do you resist?
-  - Submit, and I will crown you with power beyond waking comprehension.
   position: 2
+  lines:
+  - 
   additionalCharacterLeft: {fileID: 0}
-  additionalCharacterRight: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
   additionalCharacterMiddle: {fileID: 0}
+  additionalCharacterRight: {fileID: 0}
   nextDialog: {fileID: 11400000, guid: f38d6ed0aec830a4192200804d26b4a7, type: 2}
-  requirePlayerDecision: 1
-  option1Text: submit
-  option2Text: rebel
-  option1NextDialog: {fileID: 11400000, guid: f38d6ed0aec830a4192200804d26b4a7, type: 2}
-  option2NextDialog: {fileID: 11400000, guid: b81431883cd6dd742bdf0a4b59fea31b, type: 2}
   triggerSceneTransition: 0
+  requirePlayerDecision: 0
+  option1Text: 
+  option1NextDialog: {fileID: 11400000, guid: f38d6ed0aec830a4192200804d26b4a7, type: 2}
+  option1AddsLove: 0
+  option1LoveAmount: 1
+  option2Text: rebel
+  option2NextDialog: {fileID: 11400000, guid: b81431883cd6dd742bdf0a4b59fea31b, type: 2}
+  option2AddsLove: 0
+  option2LoveAmount: 1
+  useLoveThreshold: 0
+  loveThreshold: 0
+  option3Text: xfjxjfgfh
+  option3NextDialog: {fileID: 0}
+  option3AddsLove: 0
+  option3LoveAmount: 1
+  option4Text: 
+  option4NextDialog: {fileID: 0}
+  option4AddsLove: 0
+  option4LoveAmount: 1
+  backgroundOnly: 1

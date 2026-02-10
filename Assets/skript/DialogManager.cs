@@ -1,8 +1,9 @@
-﻿using TMPro;
+﻿using System.Collections;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class DialogManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class DialogManager : MonoBehaviour
     [SerializeField] public Image leftImage;
     [SerializeField] public Image rightImage;
     [SerializeField] public Image middleImage;
+    [SerializeField] public Image fullViewImage;
 
     [SerializeField] private Dialog currentDialog;
     private int currentLineIndex;
@@ -26,8 +28,16 @@ public class DialogManager : MonoBehaviour
     [SerializeField] private GameObject optionButton2;
     [SerializeField] private TextMeshProUGUI optionButton1Text;
     [SerializeField] private TextMeshProUGUI optionButton2Text;
+
+    [SerializeField] private GameObject buttonC;
+    [SerializeField] private GameObject buttonD;
+    [SerializeField] private TextMeshProUGUI buttonCText;
+    [SerializeField] private TextMeshProUGUI buttonDText;
+
     private bool option1;
     private bool option2;
+    private bool option3;
+    private bool option4;
     private bool waitingForDecision;
 
     [Header("Scene Transition")]
@@ -49,16 +59,57 @@ public class DialogManager : MonoBehaviour
         SetImageColorActive(leftImage, false);
         SetImageColorActive(rightImage, false);
         SetImageColorActive(middleImage, false);
+        SetImageColorActive(fullViewImage, false);
         ChangeImageHolderState(leftImage, false);
         ChangeImageHolderState(rightImage, false);
         ChangeImageHolderState(middleImage, false);
+        ChangeImageHolderState(fullViewImage, false);
         dialogPanel.SetActive(false);
+
+        // hide all option buttons initially
         ChangeOptionButtonsState(false);
+
         if (fadeImage)
+        {
             fadeImage.color = new Color(0, 0, 0, 0);
+            fadeImage.raycastTarget = false;
+        }
+
+        // ensure Button components are present and not interactable at start
+        SetButtonInteractable(optionButton1, false);
+        SetButtonInteractable(optionButton2, false);
+        SetButtonInteractable(buttonC, false);
+        SetButtonInteractable(buttonD, false);
+
+        // Wire up OnClick listeners so clicks always call ChooseOption(...)
+        SetupOptionButtons();
 
         skipTypingRequest = false;
         lineFullyVisible = false;
+    }
+
+    private void SetupOptionButtons()
+    {
+        SetupButton(optionButton1, 1);
+        SetupButton(optionButton2, 2);
+        SetupButton(buttonC, 3);
+        SetupButton(buttonD, 4);
+    }
+
+    private void SetupButton(GameObject go, int id)
+    {
+        if (go == null) return;
+        var btn = go.GetComponent<Button>() ?? go.GetComponentInChildren<Button>();
+        if (btn == null) return;
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(() => ChooseOption(id));
+    }
+
+    private void SetButtonInteractable(GameObject go, bool state)
+    {
+        if (go == null) return;
+        var b = go.GetComponent<Button>() ?? go.GetComponentInChildren<Button>();
+        if (b != null) b.interactable = state;
     }
 
     // Update is called once per frame
@@ -68,34 +119,45 @@ public class DialogManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
-            // 1. Nejvyšší priorita = transition (fade, čekání na klik po fade atd.)
+            // 1. Highest priority = transition
             if (transitionState != TransitionState.None)
             {
                 HandleTransitionClick();
-                return;   // ← důležité – ukončíme tento klik
+                return;
             }
 
-            // 2. Pokud ještě píše text → skip na celý text
+            // 2. If current dialog is background-only -> consume click as "advance"
+            if (currentDialog != null && currentDialog.backgroundOnly)
+            {
+                currentLineIndex++;
+                if (currentDialog.lines == null || currentLineIndex >= currentDialog.lines.Length)
+                {
+                    FinishSayingLogic();
+                }
+                // always consume click when in backgroundOnly mode
+                return;
+            }
+
+            // 3. If still typing -> skip to end of line
             if (isTalking)
             {
                 skipTypingRequest = true;
                 return;
             }
 
-            // 3. Pokud je řádek dokončený → posun na další (nebo finish)
+            // 4. If the current line is fully visible -> advance
             if (lineFullyVisible)
             {
                 lineFullyVisible = false;
                 currentLineIndex++;
 
-                if (!currentDialog) return;
+                if (!currentDialog)
+                    return;
 
                 if (currentLineIndex >= currentDialog.lines.Length)
                 {
                     FinishSayingLogic();
 
-                    // ← KLÍČOVÉ: Pokud se právě nastavil transition stav, 
-                    //   tak tenhle klik už může rovnou spustit přechod
                     if (transitionState == TransitionState.WaitingForClickFadingIn)
                     {
                         HandleTransitionClick();
@@ -108,7 +170,7 @@ public class DialogManager : MonoBehaviour
                 return;
             }
 
-            // 4. První klik na nový řádek → začni psát
+            // 5. Otherwise start typing (first click)
             ManageSpeechLogic();
         }
     }
@@ -116,6 +178,25 @@ public class DialogManager : MonoBehaviour
     private void ManageSpeechLogic()
     {
         if (!currentDialog) return;
+
+        // If dialog wants background-only presentation, hide UI and treat line as instantly visible
+        if (currentDialog.backgroundOnly)
+        {
+            // hide all UI elements except background
+            dialogPanel.SetActive(false);
+            ChangeOptionButtonsState(false);
+            ChangeImageHolderState(leftImage, false);
+            ChangeImageHolderState(rightImage, false);
+            ChangeImageHolderState(middleImage, false);
+            ChangeImageHolderState(fullViewImage, false);
+            UpdateBackground();
+
+            // make the line considered visible so clicks advance
+            skipTypingRequest = false;
+            lineFullyVisible = true;
+            isTalking = false;
+            return;
+        }
 
         // If index out of bounds, finish logic (handles decisions / transitions)
         if (currentLineIndex < 0) currentLineIndex = 0;
@@ -136,39 +217,81 @@ public class DialogManager : MonoBehaviour
         skipTypingRequest = false;
         lineFullyVisible = false;
 
-        talkingRoutine = StartCoroutine(Say(currentDialog.lines[currentLineIndex], currentDialog.character.characterName));
+        talkingRoutine = StartCoroutine(Say(currentDialog.lines[currentLineIndex], currentDialog.character != null ? currentDialog.character.characterName : ""));
     }
 
     private void ManageAlignments()
     {
+        // If backgroundOnly, hide characters and textbox (no dimming)
+        if (currentDialog != null && currentDialog.backgroundOnly)
+        {
+            ChangeImageHolderState(leftImage, false);
+            ChangeImageHolderState(rightImage, false);
+            ChangeImageHolderState(middleImage, false);
+            ChangeImageHolderState(fullViewImage, false);
+            dialogPanel.SetActive(false);
+            ChangeOptionButtonsState(false);
+            return;
+        }
+
+        // Additional characters (left/right/middle/fullView) use their default expression (fullView uses middle/additionalMiddle by default)
         ChangeImageHolderState(leftImage, currentDialog.additionalCharacterLeft);
         ChangeImageHolderState(rightImage, currentDialog.additionalCharacterRight);
         ChangeImageHolderState(middleImage, currentDialog.additionalCharacterMiddle);
+        // fullViewImage currently has no separate additionalCharacter in Dialog; keep it inactive by default
+        ChangeImageHolderState(fullViewImage, false);
 
-        Sprite currentSprite = currentDialog.character.GetSprite(currentDialog.expression);
+        // Main character expression (from currentDialog.expression)
+        Sprite currentSprite = null;
+        if (currentDialog?.character != null)
+            currentSprite = currentDialog.character.GetSprite(currentDialog.expression);
 
         switch (currentDialog.position)
         {
             case Dialog.Position.Left:
-                leftImage.sprite = currentSprite;
+                if (currentSprite != null) leftImage.sprite = currentSprite;
                 SetImageColorActive(rightImage, false);
                 SetImageColorActive(leftImage, true);
                 SetImageColorActive(middleImage, false);
-                //ChangeImageHolderState(leftImage, currentDialog.character);
+                SetImageColorActive(fullViewImage, false);
+                leftImage.gameObject.SetActive(true);
+                rightImage.gameObject.SetActive(false);
+                middleImage.gameObject.SetActive(false);
+                fullViewImage?.gameObject.SetActive(false);
                 break;
             case Dialog.Position.Right:
-                rightImage.sprite = currentSprite;
+                if (currentSprite != null) rightImage.sprite = currentSprite;
                 SetImageColorActive(rightImage, true);
                 SetImageColorActive(leftImage, false);
                 SetImageColorActive(middleImage, false);
-                //ChangeImageHolderState(rightImage, currentDialog.character);
+                SetImageColorActive(fullViewImage, false);
+                rightImage.gameObject.SetActive(true);
+                leftImage.gameObject.SetActive(false);
+                middleImage.gameObject.SetActive(false);
+                fullViewImage?.gameObject.SetActive(false);
                 break;
             case Dialog.Position.Middle:
-                middleImage.sprite = currentSprite;
+                if (currentSprite != null) middleImage.sprite = currentSprite;
                 SetImageColorActive(rightImage, false);
                 SetImageColorActive(leftImage, false);
                 SetImageColorActive(middleImage, true);
-                //ChangeImageHolderState(middleImage, currentDialog.character);
+                SetImageColorActive(fullViewImage, false);
+                middleImage.gameObject.SetActive(true);
+                leftImage.gameObject.SetActive(false);
+                rightImage.gameObject.SetActive(false);
+                fullViewImage?.gameObject.SetActive(false);
+                break;
+            case Dialog.Position.FullView:
+                // FullView behaves like Middle by default (character centered, sides hidden)
+                if (currentSprite != null && fullViewImage != null) fullViewImage.sprite = currentSprite;
+                SetImageColorActive(rightImage, false);
+                SetImageColorActive(leftImage, false);
+                SetImageColorActive(middleImage, false);
+                SetImageColorActive(fullViewImage, true);
+                leftImage.gameObject.SetActive(false);
+                rightImage.gameObject.SetActive(false);
+                middleImage.gameObject.SetActive(false);
+                if (fullViewImage != null) fullViewImage.gameObject.SetActive(true);
                 break;
         }
     }
@@ -220,33 +343,157 @@ public class DialogManager : MonoBehaviour
                 transitionState = TransitionState.WaitingForClickFadingIn;
                 return;
             }
+
+            // Advance to next dialog and immediately update UI to reflect it.
             currentLineIndex = 0;
             currentDialog = currentDialog.nextDialog;
+
+            // If no next dialog, hide UI and return.
+            if (currentDialog == null)
+            {
+                dialogPanel.SetActive(false);
+                ChangeOptionButtonsState(false);
+                ChangeImageHolderState(leftImage, false);
+                ChangeImageHolderState(rightImage, false);
+                ChangeImageHolderState(middleImage, false);
+                if (fullViewImage != null) ChangeImageHolderState(fullViewImage, false);
+                return;
+            }
+
+            // Update visuals for the new dialog right away.
+            UpdateBackground();
+            ManageAlignments();
+
+            // Reset typing state so ManageSpeechLogic behaves consistently.
+            skipTypingRequest = false;
+            lineFullyVisible = false;
+            isTalking = false;
+
+            // If the new dialog is background-only, ensure UI is hidden.
+            if (currentDialog.backgroundOnly)
+            {
+                dialogPanel.SetActive(false);
+                ChangeOptionButtonsState(false);
+                return;
+            }
+
+            // Otherwise start the new dialog's speech logic immediately.
+            ManageSpeechLogic();
         }
     }
 
     private IEnumerator ManagePlayerDecision()
     {
         waitingForDecision = true;
-        ChangeOptionButtonsState(true);
-        optionButton1Text.text = currentDialog.option1Text;
-        optionButton2Text.text = currentDialog.option2Text;
-        yield return new WaitUntil(() => option1 || option2);
+
+        // Decide which option pair to show based on Love gate
+        bool useGate = currentDialog != null && currentDialog.useLoveThreshold;
+        bool gatePassed = useGate && GameVariables.Love >= currentDialog.loveThreshold;
+
+        if (gatePassed && (!string.IsNullOrEmpty(currentDialog.option3Text) || !string.IsNullOrEmpty(currentDialog.option4Text)))
+        {
+            // show alternate buttons 3 & 4
+            optionButton1?.SetActive(false);
+            optionButton2?.SetActive(false);
+
+            if (buttonC != null)
+            {
+                buttonC.SetActive(true);
+                buttonCText.text = string.IsNullOrEmpty(currentDialog.option3Text) ? currentDialog.option1Text : currentDialog.option3Text;
+                SetButtonInteractable(buttonC, true);
+            }
+            if (buttonD != null)
+            {
+                buttonD.SetActive(true);
+                buttonDText.text = string.IsNullOrEmpty(currentDialog.option4Text) ? currentDialog.option2Text : currentDialog.option4Text;
+                SetButtonInteractable(buttonD, true);
+            }
+        }
+        else
+        {
+            // show primary buttons 1 & 2
+            buttonC?.SetActive(false);
+            buttonD?.SetActive(false);
+
+            if (optionButton1 != null)
+            {
+                optionButton1.SetActive(true);
+                optionButton1Text.text = currentDialog.option1Text;
+                SetButtonInteractable(optionButton1, true);
+            }
+            if (optionButton2 != null)
+            {
+                optionButton2.SetActive(true);
+                optionButton2Text.text = currentDialog.option2Text;
+                SetButtonInteractable(optionButton2, true);
+            }
+        }
+
+        // wait for any of the possible choices (1..4)
+        yield return new WaitUntil(() => option1 || option2 || option3 || option4);
+
+        // handle chosen option; prefer alternate dialogs/amounts if gate passed
         if (option1)
         {
-            currentDialog = currentDialog.option1NextDialog;
+            if (gatePassed && currentDialog.option3NextDialog != null)
+            {
+                ApplyLucyChange(currentDialog.option3AddsLove, currentDialog.option3LoveAmount);
+                currentDialog = currentDialog.option3NextDialog;
+            }
+            else
+            {
+                ApplyLucyChange(currentDialog.option1AddsLove, currentDialog.option1LoveAmount);
+                currentDialog = currentDialog.option1NextDialog;
+            }
             option1 = false;
         }
+
         if (option2)
         {
-            currentDialog = currentDialog.option2NextDialog;
+            if (gatePassed && currentDialog.option4NextDialog != null)
+            {
+                ApplyLucyChange(currentDialog.option4AddsLove, currentDialog.option4LoveAmount);
+                currentDialog = currentDialog.option4NextDialog;
+            }
+            else
+            {
+                ApplyLucyChange(currentDialog.option2AddsLove, currentDialog.option2LoveAmount);
+                currentDialog = currentDialog.option2NextDialog;
+            }
             option2 = false;
+        }
+
+        if (option3)
+        {
+            // choosing option3 (alternate left) maps to option3NextDialog
+            ApplyLucyChange(currentDialog.option3AddsLove, currentDialog.option3LoveAmount);
+            currentDialog = currentDialog.option3NextDialog ?? currentDialog.option1NextDialog;
+            option3 = false;
+        }
+
+        if (option4)
+        {
+            // choosing option4 (alternate right) maps to option4NextDialog
+            ApplyLucyChange(currentDialog.option4AddsLove, currentDialog.option4LoveAmount);
+            currentDialog = currentDialog.option4NextDialog ?? currentDialog.option2NextDialog;
+            option4 = false;
         }
 
         currentLineIndex = 0;
         waitingForDecision = false;
+
+        // hide all option buttons and stop interactability
         ChangeOptionButtonsState(false);
         ManageSpeechLogic();
+    }
+
+    private void ApplyLucyChange(bool flag, int amount)
+    {
+        if (flag || amount != 0)
+        {
+            int a = amount != 0 ? amount : 1;
+            GameVariables.AddLove(a);
+        }
     }
 
     private void HandleTransitionClick()
@@ -264,9 +511,6 @@ public class DialogManager : MonoBehaviour
                 transitionState = TransitionState.None;
                 ManageSpeechLogic();   // spustí první řádek nového dialogu
                 break;
-
-                // case TransitionState.Fading:  // tenhle obvykle nepotřebuješ řešit, protože coroutine běží sama
-                //     break;
         }
     }
 
@@ -279,11 +523,11 @@ public class DialogManager : MonoBehaviour
             yield break;
         }
 
-        // ── 1. Fade-out starých prvků ───────────────────────────────
-        float elementsFadeDuration = 0.4f;     // rychlost fade postav + textboxu
+        float elementsFadeDuration = 0.4f;
 
         CanvasGroup dialogGroup = dialogPanel.GetComponent<CanvasGroup>();
         if (dialogGroup == null) dialogGroup = dialogPanel.AddComponent<CanvasGroup>();
+        dialogGroup.blocksRaycasts = true;
 
         float fadeOutElapsed = 0f;
         while (fadeOutElapsed < elementsFadeDuration)
@@ -291,93 +535,113 @@ public class DialogManager : MonoBehaviour
             fadeOutElapsed += Time.deltaTime;
             float t = fadeOutElapsed / elementsFadeDuration;
 
-            // Postavy fade out
-            if (leftImage.gameObject.activeSelf) leftImage.color = new Color(1, 1, 1, Mathf.Lerp(1f, 0f, t));
-            if (rightImage.gameObject.activeSelf) rightImage.color = new Color(1, 1, 1, Mathf.Lerp(1f, 0f, t));
-            if (middleImage.gameObject.activeSelf) middleImage.color = new Color(1, 1, 1, Mathf.Lerp(1f, 0f, t));
+            if (leftImage != null && leftImage.gameObject.activeSelf) leftImage.color = new Color(1, 1, 1, Mathf.Lerp(1f, 0f, t));
+            if (rightImage != null && rightImage.gameObject.activeSelf) rightImage.color = new Color(1, 1, 1, Mathf.Lerp(1f, 0f, t));
+            if (middleImage != null && middleImage.gameObject.activeSelf) middleImage.color = new Color(1, 1, 1, Mathf.Lerp(1f, 0f, t));
+            if (fullViewImage != null && fullViewImage.gameObject.activeSelf) fullViewImage.color = new Color(1, 1, 1, Mathf.Lerp(1f, 0f, t));
 
-            // Dialog panel fade out
             dialogGroup.alpha = Mathf.Lerp(1f, 0f, t);
 
             yield return null;
         }
 
-        // Zajistíme přesnou nulu
-        if (leftImage.gameObject.activeSelf) leftImage.color = new Color(1, 1, 1, 0f);
-        if (rightImage.gameObject.activeSelf) rightImage.color = new Color(1, 1, 1, 0f);
-        if (middleImage.gameObject.activeSelf) middleImage.color = new Color(1, 1, 1, 0f);
+        if (leftImage != null && leftImage.gameObject.activeSelf) leftImage.color = new Color(1, 1, 1, 0f);
+        if (rightImage != null && rightImage.gameObject.activeSelf) rightImage.color = new Color(1, 1, 1, 0f);
+        if (middleImage != null && middleImage.gameObject.activeSelf) middleImage.color = new Color(1, 1, 1, 0f);
+        if (fullViewImage != null && fullViewImage.gameObject.activeSelf) fullViewImage.color = new Color(1, 1, 1, 0f);
         dialogGroup.alpha = 0f;
+        dialogGroup.blocksRaycasts = false;
 
-        // Schováme objekty
         dialogPanel.SetActive(false);
         ChangeImageHolderState(leftImage, false);
         ChangeImageHolderState(rightImage, false);
         ChangeImageHolderState(middleImage, false);
+        if (fullViewImage != null) ChangeImageHolderState(fullViewImage, false);
 
-        // Krátká pauza (můžeš snížit na 0.1–0.3s nebo úplně odstranit)
         yield return new WaitForSeconds(0.25f);
 
-        // ── 2. Fade to black ─────────────────────────────────────────
+        // Fade to black
         yield return StartCoroutine(FadeToAlpha(1f));
         dialogText.text = " ";
 
-        // Změna obsahu scény
-        currentDialog = currentDialog.nextDialog;
+        // Switch dialog data
+        currentDialog = currentDialog?.nextDialog;
         currentLineIndex = 0;
-        UpdateBackground();   // aktualizujeme pozadí pro nový dialog
+        UpdateBackground();
 
-        // Krátká pauza po načtení nového obsahu
         yield return new WaitForSeconds(0.25f);
-        
 
-        // ── 3. Fade from black ───────────────────────────────────────
+        // Fade from black
         yield return StartCoroutine(FadeToAlpha(0f));
 
-        // ── 4. Fade-in nových prvků ──────────────────────────────────
+        // Apply alignments for new dialog
         ManageAlignments();
-        dialogPanel.SetActive(true);
 
-        // Připravíme zatmavenou barvu s alpha 0
+        // Only enable dialog UI if new dialog exists and is not background-only
+        bool showDialogUI = currentDialog != null && !currentDialog.backgroundOnly;
+        dialogPanel.SetActive(showDialogUI);
+        dialogGroup.blocksRaycasts = showDialogUI;
+        dialogGroup.alpha = 0f;
+
         Color dimColorStart = new Color(0.65f, 0.65f, 0.65f, 0f);
         Color dimColorEnd = new Color(0.65f, 0.65f, 0.65f, 1f);
 
-        // Nastavíme počáteční stav – vše zatmavené a neviditelné
-        if (leftImage.gameObject.activeSelf) leftImage.color = dimColorStart;
-        if (rightImage.gameObject.activeSelf) rightImage.color = dimColorStart;
-        if (middleImage.gameObject.activeSelf) middleImage.color = dimColorStart;
-        dialogGroup.alpha = 0f;
+        if (leftImage != null && leftImage.gameObject.activeSelf) leftImage.color = dimColorStart;
+        if (rightImage != null && rightImage.gameObject.activeSelf) rightImage.color = dimColorStart;
+        if (middleImage != null && middleImage.gameObject.activeSelf) middleImage.color = dimColorStart;
+        if (fullViewImage != null && fullViewImage.gameObject.activeSelf) fullViewImage.color = dimColorStart;
 
-        // Samotný fade-in – alpha roste od 0 → 1, barva zůstává zatmavená
         float elapsed = 0f;
         while (elapsed < elementsFadeDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / elementsFadeDuration;
-
-            // Lerpujeme jen alpha, barva zůstává konstantně zatmavená
             float currentAlpha = Mathf.Lerp(0f, 1f, t);
 
-            if (leftImage.gameObject.activeSelf)
-                leftImage.color = new Color(0.65f, 0.65f, 0.65f, currentAlpha);
-
-            if (rightImage.gameObject.activeSelf)
-                rightImage.color = new Color(0.65f, 0.65f, 0.65f, currentAlpha);
-
-            if (middleImage.gameObject.activeSelf)
-                middleImage.color = new Color(0.65f, 0.65f, 0.65f, currentAlpha);
+            if (leftImage != null && leftImage.gameObject.activeSelf) leftImage.color = new Color(0.65f, 0.65f, 0.65f, currentAlpha);
+            if (rightImage != null && rightImage.gameObject.activeSelf) rightImage.color = new Color(0.65f, 0.65f, 0.65f, currentAlpha);
+            if (middleImage != null && middleImage.gameObject.activeSelf) middleImage.color = new Color(0.65f, 0.65f, 0.65f, currentAlpha);
+            if (fullViewImage != null && fullViewImage.gameObject.activeSelf) fullViewImage.color = new Color(0.65f, 0.65f, 0.65f, currentAlpha);
 
             dialogGroup.alpha = currentAlpha;
 
             yield return null;
         }
 
-        // Zajistíme přesnou konečnou hodnotu
-        if (leftImage.gameObject.activeSelf) leftImage.color = dimColorEnd;
-        if (rightImage.gameObject.activeSelf) rightImage.color = dimColorEnd;
-        if (middleImage.gameObject.activeSelf) middleImage.color = dimColorEnd;
+        if (leftImage != null && leftImage.gameObject.activeSelf) leftImage.color = dimColorEnd;
+        if (rightImage != null && rightImage.gameObject.activeSelf) rightImage.color = dimColorEnd;
+        if (middleImage != null && middleImage.gameObject.activeSelf) middleImage.color = dimColorEnd;
+        if (fullViewImage != null && fullViewImage.gameObject.activeSelf) fullViewImage.color = dimColorEnd;
         dialogGroup.alpha = 1f;
 
-        // TADY UŽ ŽÁDNÉ SetImageColorActive(false) !!!
+        // Set transition state correctly so Update() won't block clicks forever.
+        if (currentDialog == null)
+        {
+            transitionState = TransitionState.None;
+            yield break;
+        }
+
+        if (currentDialog.backgroundOnly)
+        {
+            // For background-only: ensure UI hidden and allow Update to advance lines
+            dialogPanel.SetActive(false);
+            ChangeOptionButtonsState(false);
+            ChangeImageHolderState(leftImage, false);
+            ChangeImageHolderState(rightImage, false);
+            ChangeImageHolderState(middleImage, false);
+            if (fullViewImage != null) ChangeImageHolderState(fullViewImage, false);
+
+            isTalking = false;
+            lineFullyVisible = true;
+            skipTypingRequest = false;
+
+            transitionState = TransitionState.None; // allow clicks to be processed by Update()
+        }
+        else
+        {
+            // For normal dialogs, wait for a click to start the new dialog (preserves original UX)
+            transitionState = TransitionState.WaitingForClickPostFade;
+        }
     }
     private IEnumerator FadeToAlpha(float targetAlpha)
     {
@@ -386,6 +650,9 @@ public class DialogManager : MonoBehaviour
             Debug.LogWarning("FadeImage není přiřazen!");
             yield break;
         }
+
+        // Ensure the fade image blocks raycasts while visible/fading
+        fadeImage.raycastTarget = true;
 
         float startAlpha = fadeImage.color.a;
         float elapsed = 0f;
@@ -415,34 +682,123 @@ public class DialogManager : MonoBehaviour
             fadeImage.color.b,
             targetAlpha
         );
+
+        // Only block raycasts when alpha > 0
+        fadeImage.raycastTarget = targetAlpha > 0f;
     }
 
 
     private void ChangeImageHolderState(Image image, Character character)
     {
+        if (image == null) return;
         if (character != null)
         {
-            // Použijeme defaultní výraz (nebo první sprite v poli)
-            image.sprite = character.GetSprite("nonexistent");   // ← nebo "neutral", podle toho, jak to máš pojmenované
-                                                             // Alternativa, pokud nechceš volat metodu:
-                                                             // image.sprite = character.expressions.Length > 0 ? character.expressions[0].sprite : null;
+            // Use the character's default expression (GetSprite default)
+            image.sprite = character.GetSprite();
         }
         image.gameObject.SetActive(character != null);
     }
-    private void ChangeImageHolderState(Image image, bool state) => image.gameObject.SetActive(state);
+    private void ChangeImageHolderState(Image image, bool state) { if (image != null) image.gameObject.SetActive(state); }
+
+    // Public API: set main character expression (for current dialog)
+    public void SetExpression(string expressionName)
+    {
+        if (currentDialog == null || currentDialog.character == null) return;
+        currentDialog.expression = expressionName;
+        ManageAlignments();
+    }
+
+    // Public API: set expression for a specific position (left/right/middle/fullview) — uses additional characters if present
+    public void SetExpressionForPosition(Dialog.Position position, string expressionName)
+    {
+        if (currentDialog == null) return;
+
+        switch (position)
+        {
+            case Dialog.Position.Left:
+                if (currentDialog.position == Dialog.Position.Left && currentDialog.character != null)
+                {
+                    currentDialog.expression = expressionName;
+                    leftImage.sprite = currentDialog.character.GetSprite(expressionName);
+                    leftImage.gameObject.SetActive(true);
+                }
+                else if (currentDialog.additionalCharacterLeft != null)
+                {
+                    leftImage.sprite = currentDialog.additionalCharacterLeft.GetSprite(expressionName);
+                    leftImage.gameObject.SetActive(true);
+                }
+                break;
+            case Dialog.Position.Right:
+                if (currentDialog.position == Dialog.Position.Right && currentDialog.character != null)
+                {
+                    currentDialog.expression = expressionName;
+                    rightImage.sprite = currentDialog.character.GetSprite(expressionName);
+                    rightImage.gameObject.SetActive(true);
+                }
+                else if (currentDialog.additionalCharacterRight != null)
+                {
+                    rightImage.sprite = currentDialog.additionalCharacterRight.GetSprite(expressionName);
+                    rightImage.gameObject.SetActive(true);
+                }
+                break;
+            case Dialog.Position.Middle:
+                if (currentDialog.position == Dialog.Position.Middle && currentDialog.character != null)
+                {
+                    currentDialog.expression = expressionName;
+                    middleImage.sprite = currentDialog.character.GetSprite(expressionName);
+                    middleImage.gameObject.SetActive(true);
+                }
+                else if (currentDialog.additionalCharacterMiddle != null)
+                {
+                    middleImage.sprite = currentDialog.additionalCharacterMiddle.GetSprite(expressionName);
+                    middleImage.gameObject.SetActive(true);
+                }
+                break;
+            case Dialog.Position.FullView:
+                if (currentDialog.position == Dialog.Position.FullView && currentDialog.character != null)
+                {
+                    currentDialog.expression = expressionName;
+                    if (fullViewImage != null) fullViewImage.sprite = currentDialog.character.GetSprite(expressionName);
+                    if (fullViewImage != null) fullViewImage.gameObject.SetActive(true);
+                    leftImage.gameObject.SetActive(false);
+                    rightImage.gameObject.SetActive(false);
+                    middleImage.gameObject.SetActive(false);
+                }
+                else
+                {
+                    // fallback to middle additional character if present
+                    if (currentDialog.additionalCharacterMiddle != null && fullViewImage != null)
+                    {
+                        fullViewImage.sprite = currentDialog.additionalCharacterMiddle.GetSprite(expressionName);
+                        fullViewImage.gameObject.SetActive(true);
+                        leftImage.gameObject.SetActive(false);
+                        rightImage.gameObject.SetActive(false);
+                        middleImage.gameObject.SetActive(false);
+                    }
+                }
+                break;
+        }
+    }
 
     public void ChooseOption(int choice)
     {
         option1 = choice == 1;
         option2 = choice == 2;
+        option3 = choice == 3;
+        option4 = choice == 4;
     }
+
     private void ChangeOptionButtonsState(bool state)
     {
-        optionButton1.SetActive(state);
-        optionButton2.SetActive(state);
+        // hide/show and disable interactability for all 4 buttons
+        if (optionButton1 != null) { optionButton1.SetActive(state); SetButtonInteractable(optionButton1, state); }
+        if (optionButton2 != null) { optionButton2.SetActive(state); SetButtonInteractable(optionButton2, state); }
+        if (buttonC != null) { buttonC.SetActive(state); SetButtonInteractable(buttonC, state); }
+        if (buttonD != null) { buttonD.SetActive(state); SetButtonInteractable(buttonD, state); }
     }
     private void SetImageColorActive(Image image, bool state)
     {
+        if (image == null) return;
         image.color = state ? new Color(1, 1, 1, 1) : new Color(0.65f, 0.65f, 0.65f, 1f);
     }
     private void UpdateBackground()
@@ -457,9 +813,7 @@ public class DialogManager : MonoBehaviour
         }
         else
         {
-            // optional: schovat nebo nechat default
             backgroundImage.enabled = false;
-            // nebo backgroundImage.sprite = defaultBackgroundSprite;
         }
     }
 }
