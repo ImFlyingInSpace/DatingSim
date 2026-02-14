@@ -12,20 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
   m_Name: 1b
   m_EditorClassIdentifier: 
+  backgroundSprite: {fileID: 0}
   character: {fileID: 11400000, guid: 08730c2fed8045749801052d1ee9bcab, type: 2}
+  expression: default
+  position: 0
   lines:
   - "I\u2019ve seen what you offer."
   - Endless night.
   - Sweet oblivion.
   - " But I still have a heartbeat, and I won\u2019t trade it for chains\u2014even
     velvet ones."
-  position: 0
   additionalCharacterLeft: {fileID: 0}
-  additionalCharacterRight: {fileID: 0}
   additionalCharacterMiddle: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  additionalCharacterRight: {fileID: 0}
   nextDialog: {fileID: 0}
+  triggerSceneTransition: 0
   requirePlayerDecision: 0
   option1Text: 
-  option2Text: 
   option1NextDialog: {fileID: 0}
+  option1AddsLove: 0
+  option1LoveAmount: 1
+  option2Text: 
   option2NextDialog: {fileID: 0}
+  option2AddsLove: 0
+  option2LoveAmount: 1
+  useLoveThreshold: 0
+  loveThreshold: 0
+  option3Text: 
+  option3NextDialog: {fileID: 0}
+  option3AddsLove: 0
+  option3LoveAmount: 1
+  option4Text: 
+  option4NextDialog: {fileID: 0}
+  option4AddsLove: 0
+  option4LoveAmount: 1
+  backgroundOnly: 1

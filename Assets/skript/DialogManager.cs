@@ -16,6 +16,12 @@ public class DialogManager : MonoBehaviour
     [SerializeField] public Image middleImage;
     [SerializeField] public Image fullViewImage;
 
+    [Header("Background brightness")]
+    [Tooltip("Brightness multiplier for normal dialogs (0 = black, 1 = original).")]
+    [SerializeField] private float backgroundDimAmount = 0.65f;
+    [Tooltip("Brightness multiplier when dialog.backgroundOnly == true.")]
+    [SerializeField] private float backgroundLightAmount = 1f;
+
     [SerializeField] private Dialog currentDialog;
     private int currentLineIndex;
     private bool isTalking;
@@ -52,6 +58,9 @@ public class DialogManager : MonoBehaviour
 
     private enum TransitionState { None, WaitingForClickFadingIn, Fading, WaitingForClickPostFade }
     private TransitionState transitionState = TransitionState.None;
+
+    // NEW: when a decision triggers a transition, store the chosen dialog here
+    private Dialog pendingDialogForTransition;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -234,66 +243,49 @@ public class DialogManager : MonoBehaviour
             return;
         }
 
-        // Additional characters (left/right/middle/fullView) use their default expression (fullView uses middle/additionalMiddle by default)
-        ChangeImageHolderState(leftImage, currentDialog.additionalCharacterLeft);
-        ChangeImageHolderState(rightImage, currentDialog.additionalCharacterRight);
-        ChangeImageHolderState(middleImage, currentDialog.additionalCharacterMiddle);
-        // fullViewImage currently has no separate additionalCharacter in Dialog; keep it inactive by default
-        ChangeImageHolderState(fullViewImage, false);
+        // Gather references
+        Character addL = currentDialog?.additionalCharacterLeft;
+        Character addR = currentDialog?.additionalCharacterRight;
+        Character addM = currentDialog?.additionalCharacterMiddle;
+        Sprite mainSprite = currentDialog?.character != null ? currentDialog.character.GetSprite(currentDialog.expression) : null;
 
-        // Main character expression (from currentDialog.expression)
-        Sprite currentSprite = null;
-        if (currentDialog?.character != null)
-            currentSprite = currentDialog.character.GetSprite(currentDialog.expression);
+        // Decide which image should be visible based on additional characters or main character position
+        bool showLeft = addL != null || (currentDialog.position == Dialog.Position.Left && currentDialog.character != null);
+        bool showRight = addR != null || (currentDialog.position == Dialog.Position.Right && currentDialog.character != null);
+        bool showMiddle = addM != null || (currentDialog.position == Dialog.Position.Middle && currentDialog.character != null);
+        bool showFull = currentDialog.position == Dialog.Position.FullView && currentDialog.character != null;
 
-        switch (currentDialog.position)
-        {
-            case Dialog.Position.Left:
-                if (currentSprite != null) leftImage.sprite = currentSprite;
-                SetImageColorActive(rightImage, false);
-                SetImageColorActive(leftImage, true);
-                SetImageColorActive(middleImage, false);
-                SetImageColorActive(fullViewImage, false);
-                leftImage.gameObject.SetActive(true);
-                rightImage.gameObject.SetActive(false);
-                middleImage.gameObject.SetActive(false);
-                fullViewImage?.gameObject.SetActive(false);
-                break;
-            case Dialog.Position.Right:
-                if (currentSprite != null) rightImage.sprite = currentSprite;
-                SetImageColorActive(rightImage, true);
-                SetImageColorActive(leftImage, false);
-                SetImageColorActive(middleImage, false);
-                SetImageColorActive(fullViewImage, false);
-                rightImage.gameObject.SetActive(true);
-                leftImage.gameObject.SetActive(false);
-                middleImage.gameObject.SetActive(false);
-                fullViewImage?.gameObject.SetActive(false);
-                break;
-            case Dialog.Position.Middle:
-                if (currentSprite != null) middleImage.sprite = currentSprite;
-                SetImageColorActive(rightImage, false);
-                SetImageColorActive(leftImage, false);
-                SetImageColorActive(middleImage, true);
-                SetImageColorActive(fullViewImage, false);
-                middleImage.gameObject.SetActive(true);
-                leftImage.gameObject.SetActive(false);
-                rightImage.gameObject.SetActive(false);
-                fullViewImage?.gameObject.SetActive(false);
-                break;
-            case Dialog.Position.FullView:
-                // FullView behaves like Middle by default (character centered, sides hidden)
-                if (currentSprite != null && fullViewImage != null) fullViewImage.sprite = currentSprite;
-                SetImageColorActive(rightImage, false);
-                SetImageColorActive(leftImage, false);
-                SetImageColorActive(middleImage, false);
-                SetImageColorActive(fullViewImage, true);
-                leftImage.gameObject.SetActive(false);
-                rightImage.gameObject.SetActive(false);
-                middleImage.gameObject.SetActive(false);
-                if (fullViewImage != null) fullViewImage.gameObject.SetActive(true);
-                break;
-        }
+        // Assign sprites: prefer additional character sprite when present, otherwise use main character sprite if appropriate
+        if (addL != null)
+            leftImage.sprite = addL.GetSprite();
+        else if (currentDialog.position == Dialog.Position.Left && mainSprite != null)
+            leftImage.sprite = mainSprite;
+
+        if (addR != null)
+            rightImage.sprite = addR.GetSprite();
+        else if (currentDialog.position == Dialog.Position.Right && mainSprite != null)
+            rightImage.sprite = mainSprite;
+
+        if (addM != null)
+            middleImage.sprite = addM.GetSprite();
+        else if (currentDialog.position == Dialog.Position.Middle && mainSprite != null)
+            middleImage.sprite = mainSprite;
+
+        if (showFull && fullViewImage != null && mainSprite != null)
+            fullViewImage.sprite = mainSprite;
+        // keep additional middle on middleImage by default (no action needed here)
+
+        // Set active states (don't forcibly hide additional characters)
+        if (leftImage != null) leftImage.gameObject.SetActive(showLeft);
+        if (rightImage != null) rightImage.gameObject.SetActive(showRight);
+        if (middleImage != null) middleImage.gameObject.SetActive(showMiddle);
+        if (fullViewImage != null) fullViewImage.gameObject.SetActive(showFull);
+
+        // Apply dimming: highlight the side where main character (currentDialog.character) sits
+        SetImageColorActive(leftImage, currentDialog.position == Dialog.Position.Left);
+        SetImageColorActive(rightImage, currentDialog.position == Dialog.Position.Right);
+        SetImageColorActive(middleImage, currentDialog.position == Dialog.Position.Middle);
+        if (fullViewImage != null) SetImageColorActive(fullViewImage, currentDialog.position == Dialog.Position.FullView);
     }
 
     private IEnumerator Say(string text, string charName)
@@ -382,15 +374,19 @@ public class DialogManager : MonoBehaviour
         }
     }
 
+    // REPLACE existing ManagePlayerDecision() with this version
     private IEnumerator ManagePlayerDecision()
     {
         waitingForDecision = true;
 
-        // Decide which option pair to show based on Love gate
-        bool useGate = currentDialog != null && currentDialog.useLoveThreshold;
-        bool gatePassed = useGate && GameVariables.Love >= currentDialog.loveThreshold;
+        // remember the dialog where the decision was requested
+        Dialog sourceDialog = currentDialog;
 
-        if (gatePassed && (!string.IsNullOrEmpty(currentDialog.option3Text) || !string.IsNullOrEmpty(currentDialog.option4Text)))
+        // Decide which option pair to show based on Love gate
+        bool useGate = sourceDialog != null && sourceDialog.useLoveThreshold;
+        bool gatePassed = useGate && GameVariables.Love >= sourceDialog.loveThreshold;
+
+        if (gatePassed && (!string.IsNullOrEmpty(sourceDialog.option3Text) || !string.IsNullOrEmpty(sourceDialog.option4Text)))
         {
             // show alternate buttons 3 & 4
             optionButton1?.SetActive(false);
@@ -399,13 +395,13 @@ public class DialogManager : MonoBehaviour
             if (buttonC != null)
             {
                 buttonC.SetActive(true);
-                buttonCText.text = string.IsNullOrEmpty(currentDialog.option3Text) ? currentDialog.option1Text : currentDialog.option3Text;
+                buttonCText.text = string.IsNullOrEmpty(sourceDialog.option3Text) ? sourceDialog.option1Text : sourceDialog.option3Text;
                 SetButtonInteractable(buttonC, true);
             }
             if (buttonD != null)
             {
                 buttonD.SetActive(true);
-                buttonDText.text = string.IsNullOrEmpty(currentDialog.option4Text) ? currentDialog.option2Text : currentDialog.option4Text;
+                buttonDText.text = string.IsNullOrEmpty(sourceDialog.option4Text) ? sourceDialog.option2Text : sourceDialog.option4Text;
                 SetButtonInteractable(buttonD, true);
             }
         }
@@ -418,13 +414,13 @@ public class DialogManager : MonoBehaviour
             if (optionButton1 != null)
             {
                 optionButton1.SetActive(true);
-                optionButton1Text.text = currentDialog.option1Text;
+                optionButton1Text.text = sourceDialog.option1Text;
                 SetButtonInteractable(optionButton1, true);
             }
             if (optionButton2 != null)
             {
                 optionButton2.SetActive(true);
-                optionButton2Text.text = currentDialog.option2Text;
+                optionButton2Text.text = sourceDialog.option2Text;
                 SetButtonInteractable(optionButton2, true);
             }
         }
@@ -432,50 +428,50 @@ public class DialogManager : MonoBehaviour
         // wait for any of the possible choices (1..4)
         yield return new WaitUntil(() => option1 || option2 || option3 || option4);
 
-        // handle chosen option; prefer alternate dialogs/amounts if gate passed
+        // Determine chosen next dialog (do NOT overwrite currentDialog yet)
+        Dialog chosenDialog = null;
+
         if (option1)
         {
-            if (gatePassed && currentDialog.option3NextDialog != null)
+            if (gatePassed && sourceDialog.option3NextDialog != null)
             {
-                ApplyLucyChange(currentDialog.option3AddsLove, currentDialog.option3LoveAmount);
-                currentDialog = currentDialog.option3NextDialog;
+                ApplyLucyChange(sourceDialog.option3AddsLove, sourceDialog.option3LoveAmount);
+                chosenDialog = sourceDialog.option3NextDialog;
             }
             else
             {
-                ApplyLucyChange(currentDialog.option1AddsLove, currentDialog.option1LoveAmount);
-                currentDialog = currentDialog.option1NextDialog;
+                ApplyLucyChange(sourceDialog.option1AddsLove, sourceDialog.option1LoveAmount);
+                chosenDialog = sourceDialog.option1NextDialog;
             }
             option1 = false;
         }
 
         if (option2)
         {
-            if (gatePassed && currentDialog.option4NextDialog != null)
+            if (gatePassed && sourceDialog.option4NextDialog != null)
             {
-                ApplyLucyChange(currentDialog.option4AddsLove, currentDialog.option4LoveAmount);
-                currentDialog = currentDialog.option4NextDialog;
+                ApplyLucyChange(sourceDialog.option4AddsLove, sourceDialog.option4LoveAmount);
+                chosenDialog = sourceDialog.option4NextDialog;
             }
             else
             {
-                ApplyLucyChange(currentDialog.option2AddsLove, currentDialog.option2LoveAmount);
-                currentDialog = currentDialog.option2NextDialog;
+                ApplyLucyChange(sourceDialog.option2AddsLove, sourceDialog.option2LoveAmount);
+                chosenDialog = sourceDialog.option2NextDialog;
             }
             option2 = false;
         }
 
         if (option3)
         {
-            // choosing option3 (alternate left) maps to option3NextDialog
-            ApplyLucyChange(currentDialog.option3AddsLove, currentDialog.option3LoveAmount);
-            currentDialog = currentDialog.option3NextDialog ?? currentDialog.option1NextDialog;
+            ApplyLucyChange(sourceDialog.option3AddsLove, sourceDialog.option3LoveAmount);
+            chosenDialog = sourceDialog.option3NextDialog ?? sourceDialog.option1NextDialog;
             option3 = false;
         }
 
         if (option4)
         {
-            // choosing option4 (alternate right) maps to option4NextDialog
-            ApplyLucyChange(currentDialog.option4AddsLove, currentDialog.option4LoveAmount);
-            currentDialog = currentDialog.option4NextDialog ?? currentDialog.option2NextDialog;
+            ApplyLucyChange(sourceDialog.option4AddsLove, sourceDialog.option4LoveAmount);
+            chosenDialog = sourceDialog.option4NextDialog ?? sourceDialog.option2NextDialog;
             option4 = false;
         }
 
@@ -484,34 +480,23 @@ public class DialogManager : MonoBehaviour
 
         // hide all option buttons and stop interactability
         ChangeOptionButtonsState(false);
+
+        // If the SOURCE dialog (where decision occurred) requests a scene transition, start it now.
+        if (sourceDialog != null && sourceDialog.triggerSceneTransition)
+        {
+            // store chosen dialog so SceneTransitionRoutine can set it after fade
+            pendingDialogForTransition = chosenDialog;
+
+            // ensure SceneTransitionRoutine uses sourceDialog as the "from" dialog
+            currentDialog = sourceDialog;
+            transitionState = TransitionState.Fading;
+            StartCoroutine(SceneTransitionRoutine());
+            yield break;
+        }
+
+        // Otherwise continue with chosen dialog immediately
+        currentDialog = chosenDialog;
         ManageSpeechLogic();
-    }
-
-    private void ApplyLucyChange(bool flag, int amount)
-    {
-        if (flag || amount != 0)
-        {
-            int a = amount != 0 ? amount : 1;
-            GameVariables.AddLove(a);
-        }
-    }
-
-    private void HandleTransitionClick()
-    {
-        Debug.Log("Klik v transition stavu: " + transitionState);
-        switch (transitionState)
-        {
-            case TransitionState.WaitingForClickFadingIn:
-                // ← TADY CHYBĚL TEN CASE (nebo byl špatně)
-                transitionState = TransitionState.Fading;
-                StartCoroutine(SceneTransitionRoutine());   // ← tady se spustí celý fade
-                break;
-
-            case TransitionState.WaitingForClickPostFade:
-                transitionState = TransitionState.None;
-                ManageSpeechLogic();   // spustí první řádek nového dialogu
-                break;
-        }
     }
 
     private IEnumerator SceneTransitionRoutine()
@@ -529,6 +514,7 @@ public class DialogManager : MonoBehaviour
         if (dialogGroup == null) dialogGroup = dialogPanel.AddComponent<CanvasGroup>();
         dialogGroup.blocksRaycasts = true;
 
+        // fade out UI elements (same as before)
         float fadeOutElapsed = 0f;
         while (fadeOutElapsed < elementsFadeDuration)
         {
@@ -564,8 +550,10 @@ public class DialogManager : MonoBehaviour
         yield return StartCoroutine(FadeToAlpha(1f));
         dialogText.text = " ";
 
-        // Switch dialog data
-        currentDialog = currentDialog?.nextDialog;
+        // Switch dialog data: if pendingDialogForTransition is set, use it; otherwise use currentDialog.nextDialog
+        Dialog next = pendingDialogForTransition ?? currentDialog?.nextDialog;
+        pendingDialogForTransition = null;
+        currentDialog = next;
         currentLineIndex = 0;
         UpdateBackground();
 
@@ -814,6 +802,50 @@ public class DialogManager : MonoBehaviour
         else
         {
             backgroundImage.enabled = false;
+        }
+
+        // Dodáno pro úpravu jasu pozadí na základě dialogu
+        if (currentDialog.backgroundOnly)
+        {
+            // Pokud je pouze pozadí, nastavte jas na plný (žádná úprava)
+            backgroundImage.color = new Color(1, 1, 1, 1);
+        }
+        else
+        {
+            // Pokud je dialog normální, ztmavte pozadí podle backgroundDimAmount
+            backgroundImage.color = new Color(backgroundDimAmount, backgroundDimAmount, backgroundDimAmount, 1);
+        }
+    }
+
+    private void ApplyLucyChange(bool flag, int amount)
+    {
+        if (flag || amount != 0)
+        {
+            int a = amount != 0 ? amount : 1;
+            GameVariables.AddLove(a);
+        }
+    }
+
+    private void HandleTransitionClick()
+    {
+        Debug.Log("HandleTransitionClick invoked, state: " + transitionState);
+        switch (transitionState)
+        {
+            case TransitionState.WaitingForClickFadingIn:
+                // Start the fade immediately when waiting to fade in
+                transitionState = TransitionState.Fading;
+                StartCoroutine(SceneTransitionRoutine());
+                break;
+
+            case TransitionState.WaitingForClickPostFade:
+                // After fade completed and waiting for click to proceed to next dialog lines
+                transitionState = TransitionState.None;
+                ManageSpeechLogic();
+                break;
+
+            default:
+                // No-op for other states
+                break;
         }
     }
 }

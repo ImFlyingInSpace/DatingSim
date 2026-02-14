@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 477c06edda5a06d46829db7ce1b4f3f9, type: 3}
-  m_Name: Julius
+  m_Name: Character
   m_EditorClassIdentifier: 
-  characterName: Julius
-  sprite: {fileID: 21300000, guid: 04617bd19ae8d17469490c9ebf03c29a, type: 3}
+  characterName: Dave
+  sprite: {fileID: 21300000, guid: 2bb30cbbc865e0443b6e6780818193d2, type: 3}
   expressions:
   - expressionName: default
-    expressionSprite: {fileID: 21300000, guid: 04617bd19ae8d17469490c9ebf03c29a, type: 3}
+    expressionSprite: {fileID: 21300000, guid: 2bb30cbbc865e0443b6e6780818193d2, type: 3}

@@ -10,21 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
-  m_Name: 1a
+  m_Name: 0c
   m_EditorClassIdentifier: 
-  backgroundSprite: {fileID: 7635013726552783190, guid: 6f64962d5ac2e1c49b457fbf8c5f5ca0, type: 3}
-  character: {fileID: 11400000, guid: 8f1477fce16bc8d4c9d6ba7d21b38889, type: 2}
-  expression: default
-  position: 1
+  backgroundSprite: {fileID: 21300000, guid: 6f64962d5ac2e1c49b457fbf8c5f5ca0, type: 3}
+  character: {fileID: 11400000, guid: b943746d11c70ca49b379cdada8ee90e, type: 2}
+  expression: AD1
+  position: 3
   lines:
-  - Oh my lord.
-  - My sweet fallen angel.
-  - I see your beauty and i kneel before you.
-  - Im yours to take and enjoy as you please.
+  - Looking for your true love?
+  - "With Lucy, it\u2019s easy, fast and accessible for dummies."
   additionalCharacterLeft: {fileID: 0}
-  additionalCharacterMiddle: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  additionalCharacterMiddle: {fileID: 0}
   additionalCharacterRight: {fileID: 0}
-  nextDialog: {fileID: 0}
+  nextDialog: {fileID: 11400000, guid: 98bdc90d67604b14890c3dde4f03ebf7, type: 2}
   triggerSceneTransition: 0
   requirePlayerDecision: 0
   option1Text: 

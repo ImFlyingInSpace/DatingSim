@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 92cf1f4f961836945aacd045c7eeb42d
+guid: b2654ea791e52604a9eab8cbf6ddc03a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8470455561190075304
-    second: happyLucy_0
-  - first:
-      213: 3543609228686670449
-    second: happyLucy_1
+      213: 3279762659843018871
+    second: madLucyNew_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: happyLucy_0
+      name: madLucyNew_0
       rect:
         serializedVersion: 2
-        x: 669
-        y: 24
-        width: 758
-        height: 1999
+        x: 66
+        y: 41
+        width: 650
+        height: 1948
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,30 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8549885ab85e27a80800000000000000
-      internalID: -8470455561190075304
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: happyLucy_1
-      rect:
-        serializedVersion: 2
-        x: 1650
-        y: 799
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 17a3aa291dd6d2130800000000000000
-      internalID: 3543609228686670449
+      spriteID: 770988f13ce048d20800000000000000
+      internalID: 3279762659843018871
       vertices: []
       indices: 
       edges: []
@@ -160,8 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      happyLucy_0: -8470455561190075304
-      happyLucy_1: 3543609228686670449
+      madLucyNew_0: 3279762659843018871
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

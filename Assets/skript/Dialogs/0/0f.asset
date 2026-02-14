@@ -10,29 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
-  m_Name: 1a
+  m_Name: 0f
   m_EditorClassIdentifier: 
-  backgroundSprite: {fileID: 7635013726552783190, guid: 6f64962d5ac2e1c49b457fbf8c5f5ca0, type: 3}
-  character: {fileID: 11400000, guid: 8f1477fce16bc8d4c9d6ba7d21b38889, type: 2}
-  expression: default
-  position: 1
+  backgroundSprite: {fileID: 21300000, guid: 6f64962d5ac2e1c49b457fbf8c5f5ca0, type: 3}
+  character: {fileID: 11400000, guid: cb0d88e4a81f15f458c42fd1e4c0411d, type: 2}
+  expression: ad1
+  position: 3
   lines:
-  - Oh my lord.
-  - My sweet fallen angel.
-  - I see your beauty and i kneel before you.
-  - Im yours to take and enjoy as you please.
+  - "WOW! That\u2019s just the thing you were looking for."
+  - You should totally give it a try.
   additionalCharacterLeft: {fileID: 0}
-  additionalCharacterMiddle: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  additionalCharacterMiddle: {fileID: 0}
   additionalCharacterRight: {fileID: 0}
   nextDialog: {fileID: 0}
-  triggerSceneTransition: 0
-  requirePlayerDecision: 0
-  option1Text: 
-  option1NextDialog: {fileID: 0}
+  triggerSceneTransition: 1
+  requirePlayerDecision: 1
+  option1Text: Give it a go
+  option1NextDialog: {fileID: 11400000, guid: 415eca1b9f576254bba18dfd1667cd28, type: 2}
   option1AddsLove: 0
   option1LoveAmount: 1
-  option2Text: 
-  option2NextDialog: {fileID: 0}
+  option2Text: click click click
+  option2NextDialog: {fileID: 11400000, guid: 415eca1b9f576254bba18dfd1667cd28, type: 2}
   option2AddsLove: 0
   option2LoveAmount: 1
   useLoveThreshold: 0

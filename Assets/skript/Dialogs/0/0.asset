@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 171081d248ff36d4491d3cdf9abce1bf, type: 3}
-  m_Name: 1a
+  m_Name: 0
   m_EditorClassIdentifier: 
-  backgroundSprite: {fileID: 7635013726552783190, guid: 6f64962d5ac2e1c49b457fbf8c5f5ca0, type: 3}
-  character: {fileID: 11400000, guid: 8f1477fce16bc8d4c9d6ba7d21b38889, type: 2}
-  expression: default
-  position: 1
+  backgroundSprite: {fileID: 21300000, guid: 6f64962d5ac2e1c49b457fbf8c5f5ca0, type: 3}
+  character: {fileID: 11400000, guid: cb0d88e4a81f15f458c42fd1e4c0411d, type: 2}
+  expression: 
+  position: 3
   lines:
-  - Oh my lord.
-  - My sweet fallen angel.
-  - I see your beauty and i kneel before you.
-  - Im yours to take and enjoy as you please.
+  - It was a normal boring day for you, our lovely main character MC.
+  - "Yes, your name was MC, because that\u2019s the energy you\u2019re bringing to
+    the table."
   additionalCharacterLeft: {fileID: 0}
-  additionalCharacterMiddle: {fileID: 11400000, guid: 1ffb8dbc1bb1edf488f0fa9248a17df0, type: 2}
+  additionalCharacterMiddle: {fileID: 0}
   additionalCharacterRight: {fileID: 0}
-  nextDialog: {fileID: 0}
+  nextDialog: {fileID: 11400000, guid: 4df01afd9bed1a64cb3275423c79f102, type: 2}
   triggerSceneTransition: 0
   requirePlayerDecision: 0
   option1Text: 
@@ -33,7 +32,7 @@ MonoBehaviour:
   option1LoveAmount: 1
   option2Text: 
   option2NextDialog: {fileID: 0}
-  option2AddsLove: 0
+  option2AddsLove: 1
   option2LoveAmount: 1
   useLoveThreshold: 0
   loveThreshold: 0

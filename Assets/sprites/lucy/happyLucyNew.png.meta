@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 826bfebc0572e804c87682366772884d
+guid: a50f48792fe68b842bcaf59be04ad232
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7772638213977056830
-    second: Julius_0
-  - first:
-      213: -5411448658364499761
-    second: Julius_1
+      213: 8346783236054380252
+    second: happyLucyNew_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Julius_0
+      name: happyLucyNew_0
       rect:
         serializedVersion: 2
-        x: 914
-        y: 1729
-        width: 167
-        height: 63
+        x: 66
+        y: 41
+        width: 650
+        height: 1948
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,30 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2c95540c9ba022490800000000000000
-      internalID: -7772638213977056830
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Julius_1
-      rect:
-        serializedVersion: 2
-        x: 702
-        y: 48
-        width: 701
-        height: 1670
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fc87be5cd1ca6e4b0800000000000000
-      internalID: -5411448658364499761
+      spriteID: cdee43a412bb5d370800000000000000
+      internalID: 8346783236054380252
       vertices: []
       indices: 
       edges: []
@@ -160,8 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Julius_0: -7772638213977056830
-      Julius_1: -5411448658364499761
+      happyLucyNew_0: 8346783236054380252
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
