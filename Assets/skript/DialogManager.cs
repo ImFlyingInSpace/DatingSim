@@ -22,6 +22,19 @@ public class DialogManager : MonoBehaviour
     [Tooltip("Brightness multiplier when dialog.backgroundOnly == true.")]
     [SerializeField] private float backgroundLightAmount = 1f;
 
+    [Header("Audio")]
+    [Tooltip("AudioSource used to play dialog music. If not assigned, one will be created on the DialogManager GameObject.")]
+    [SerializeField] private AudioSource musicSource;
+    [Tooltip("Master music volume for dialog music (0..1).")]
+    [Range(0f, 1f)]
+    [SerializeField] private float musicVolume = 1f;
+
+    [Tooltip("AudioSource used to play one-shot SFX for dialogs. If not assigned, one will be created.")]
+    [SerializeField] private AudioSource sfxSource;
+    [Tooltip("Master SFX volume for dialog one-shots (0..1).")]
+    [Range(0f, 1f)]
+    [SerializeField] private float sfxVolume = 1f;
+
     [SerializeField] private Dialog currentDialog;
     private int currentLineIndex;
     private bool isTalking;
@@ -95,6 +108,28 @@ public class DialogManager : MonoBehaviour
 
         skipTypingRequest = false;
         lineFullyVisible = false;
+
+        // Ensure we have an AudioSource to play music
+        if (musicSource == null)
+        {
+            musicSource = gameObject.GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+            musicSource.playOnAwake = false;
+            musicSource.loop = true;
+        }
+        musicSource.volume = musicVolume;
+
+        // Ensure we have an AudioSource to play one-shot SFX
+        if (sfxSource == null)
+        {
+            sfxSource = gameObject.AddComponent<AudioSource>();
+            sfxSource.playOnAwake = false;
+            sfxSource.loop = false;
+        }
+        sfxSource.volume = sfxVolume;
+
+        // Apply music and sfx for starting dialog (if any)
+        ApplyDialogMusic(currentDialog);
+        ApplyDialogSfx(currentDialog);
     }
 
     private void SetupOptionButtons()
@@ -340,6 +375,10 @@ public class DialogManager : MonoBehaviour
             currentLineIndex = 0;
             currentDialog = currentDialog.nextDialog;
 
+            // Apply music and sfx change (if any) for the new dialog
+            ApplyDialogMusic(currentDialog);
+            ApplyDialogSfx(currentDialog);
+
             // If no next dialog, hide UI and return.
             if (currentDialog == null)
             {
@@ -496,6 +535,11 @@ public class DialogManager : MonoBehaviour
 
         // Otherwise continue with chosen dialog immediately
         currentDialog = chosenDialog;
+
+        // Apply music and sfx change for chosen dialog (if any)
+        ApplyDialogMusic(currentDialog);
+        ApplyDialogSfx(currentDialog);
+
         ManageSpeechLogic();
     }
 
@@ -555,6 +599,11 @@ public class DialogManager : MonoBehaviour
         pendingDialogForTransition = null;
         currentDialog = next;
         currentLineIndex = 0;
+
+        // Apply music and sfx change (if any) for dialog after transition
+        ApplyDialogMusic(currentDialog);
+        ApplyDialogSfx(currentDialog);
+
         UpdateBackground();
 
         yield return new WaitForSeconds(0.25f);
@@ -824,6 +873,67 @@ public class DialogManager : MonoBehaviour
             int a = amount != 0 ? amount : 1;
             GameVariables.AddLove(a);
         }
+    }
+
+    // NEW: Apply dialog audio (called whenever currentDialog is changed)
+    private void ApplyDialogMusic(Dialog dialog)
+    {
+        if (musicSource == null) return;
+
+        if (dialog == null) return;
+
+        // If dialog explicitly requests stopping music, stop it.
+        if (dialog.stopMusic)
+        {
+            musicSource.Stop();
+            musicSource.clip = null;
+            return;
+        }
+
+        // If dialog has a music clip, switch to it (looped). If it is null, keep playing current music.
+        if (dialog.music != null)
+        {
+            // If same clip already playing, just ensure volume and looping
+            if (musicSource.clip == dialog.music)
+            {
+                musicSource.loop = true;
+                musicSource.volume = musicVolume;
+                if (!musicSource.isPlaying) musicSource.Play();
+                return;
+            }
+
+            musicSource.clip = dialog.music;
+            musicSource.loop = true;
+            musicSource.volume = musicVolume;
+            musicSource.Play();
+        }
+        // If dialog.music is null -> do nothing (keep current music playing)
+    }
+
+    // NEW: Play one-shot dialog SFX (separate from background music)
+    private void ApplyDialogSfx(Dialog dialog)
+    {
+        if (sfxSource == null) return;
+        if (dialog == null) return;
+
+        if (dialog.sfx != null)
+        {
+            float volume = Mathf.Clamp01(sfxVolume * dialog.sfxVolume);
+            sfxSource.PlayOneShot(dialog.sfx, volume);
+        }
+    }
+
+    // Expose runtime setters for music / sfx volume (optional)
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = Mathf.Clamp01(volume);
+        if (musicSource != null) musicSource.volume = musicVolume;
+    }
+
+    public void SetSfxVolume(float volume)
+    {
+        sfxVolume = Mathf.Clamp01(volume);
+        if (sfxSource != null) sfxSource.volume = sfxVolume;
     }
 
     private void HandleTransitionClick()

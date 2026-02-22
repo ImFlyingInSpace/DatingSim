@@ -21,8 +21,15 @@ MonoBehaviour:
   - "Yes, your name was MC, because that\u2019s the energy you\u2019re bringing to
     the table."
   additionalCharacterLeft: {fileID: 0}
+  additionalCharacterLeftExpression: default
   additionalCharacterMiddle: {fileID: 0}
+  additionalCharacterMiddleExpression: default
   additionalCharacterRight: {fileID: 0}
+  additionalCharacterRightExpression: default
+  music: {fileID: 8300000, guid: 50eed732c83d85942a47be1e5403b5a9, type: 3}
+  stopMusic: 0
+  sfx: {fileID: 0}
+  sfxVolume: 1
   nextDialog: {fileID: 11400000, guid: 4df01afd9bed1a64cb3275423c79f102, type: 2}
   triggerSceneTransition: 0
   requirePlayerDecision: 0
@@ -32,7 +39,7 @@ MonoBehaviour:
   option1LoveAmount: 1
   option2Text: 
   option2NextDialog: {fileID: 0}
-  option2AddsLove: 1
+  option2AddsLove: 0
   option2LoveAmount: 1
   useLoveThreshold: 0
   loveThreshold: 0

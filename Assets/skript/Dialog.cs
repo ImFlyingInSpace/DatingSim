@@ -14,8 +14,28 @@ public class Dialog : ScriptableObject
     public string[] lines;
 
     public Character additionalCharacterLeft;
+    // expression for the left additional character (used when additionalCharacterLeft is assigned)
+    public string additionalCharacterLeftExpression = "default";
+
     public Character additionalCharacterMiddle;
+    // expression for the middle additional character (used when additionalCharacterMiddle is assigned)
+    public string additionalCharacterMiddleExpression = "default";
+
     public Character additionalCharacterRight;
+    // expression for the right additional character (used when additionalCharacterRight is assigned)
+    public string additionalCharacterRightExpression = "default";
+
+    [Header("Audio")]
+    [Tooltip("Looped background music to play when this dialog becomes active. If null, current music keeps playing.")]
+    public AudioClip music;
+    [Tooltip("If true, stop currently playing music when this dialog becomes active.")]
+    public bool stopMusic = false;
+
+    [Tooltip("One-shot sound effect that will be played once when this dialog becomes active (separate from background music).")]
+    public AudioClip sfx;
+    [Tooltip("Per-dialog multiplier for SFX volume (0..1). Final volume = DialogManager.sfxVolume * this value.")]
+    [Range(0f, 1f)]
+    public float sfxVolume = 1f;
 
     [Header("Next dialog / options")]
 

@@ -17,11 +17,13 @@ MonoBehaviour:
   expression: instabrag
   position: 3
   lines:
-  - "Anyway, you were lounging on a BIG yellow couch and swiping through Instabrag\u2026"
-  - when it hit you in the face.
+  - 
   additionalCharacterLeft: {fileID: 0}
+  additionalCharacterLeftExpression: default
   additionalCharacterMiddle: {fileID: 0}
+  additionalCharacterMiddleExpression: default
   additionalCharacterRight: {fileID: 0}
+  additionalCharacterRightExpression: default
   nextDialog: {fileID: 11400000, guid: ac470ce84652d57468a33925f56ada52, type: 2}
   triggerSceneTransition: 0
   requirePlayerDecision: 0
